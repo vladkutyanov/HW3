@@ -16,20 +16,19 @@ class CountVectorizer:
     def fit_transform(self, corpus):
         """Вычисляем матрицу"""
         text_counter = 0
-        feature_hash = self.__fill_hash(corpus)
-        count_matrix_temp = [[0 for i in range(len(feature_hash))]
+        self._feature_hash = self.__fill_hash(corpus)
+        count_matrix_temp = [[0 for i in range(len(self._feature_hash))]
                              for i in range(len(corpus))]
         for text in corpus:
             for word in text.lower().split(' '):
-                if word in feature_hash:
-                    count_matrix_temp[text_counter][feature_hash[word]] += 1
+                if word in self._feature_hash:
+                    count_matrix_temp[text_counter][self._feature_hash[word]] += 1
             text_counter += 1
         return count_matrix_temp
 
     def get_feature_names(self):
         """Возвращаем список уникальных слов"""
-        feature_hash = self.__fill_hash(corpus)
-        return list(feature_hash.keys())
+        return list(self.feature_hash.keys())
 
 
 if __name__ == '__main__':
