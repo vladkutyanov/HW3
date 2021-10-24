@@ -28,7 +28,7 @@ class CountVectorizer:
 
     def get_feature_names(self):
         """Возвращаем список уникальных слов"""
-        return list(self.feature_hash.keys())
+        return list(self._feature_hash.keys())
 
 
 if __name__ == '__main__':
