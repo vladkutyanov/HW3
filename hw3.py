@@ -5,12 +5,12 @@ class CountVectorizer:
     def __fill_hash(self, corpus):
         """Заполняем временный словарь: {'слово': индекс}"""
         feature_hash = dict()
-        counter = 0
+        index_counter = 0
         for text in corpus:
             for word in text.lower().split(' '):
                 if word not in feature_hash:
-                    feature_hash[word] = counter
-                    counter += 1
+                    feature_hash[word] = index_counter
+                    index_counter += 1
         return feature_hash
 
     def fit_transform(self, corpus):
