@@ -1,3 +1,6 @@
+from math import log
+
+
 class CountVectorizer:
     def __init__(self):
         pass
@@ -30,19 +33,56 @@ class CountVectorizer:
         """Возвращаем список уникальных слов"""
         return list(self._feature_hash.keys())
 
+    def term_freq(self, corpus):
+        length = 0
+        frequency_list = []
+        matrix = self.fit_transform(corpus)
+        for row in matrix:
+            temp_frequency = []
+            length = sum(row)
+            for term in row:
+                temp_frequency.append(round(term / length, 3))
+            frequency_list.append(temp_frequency)
+        return frequency_list
 
-if __name__ == '__main__':
-    corpus = [
+    def idf_transform(self, corpus):
+        matrix = self.fit_transform(corpus)
+        number_of_docs = len(corpus)
+        idf_matrix = []
+        idf_abs = [0 for i in range(len(matrix[0]))]
+        for row in range(len(matrix)):
+            for term in range(len(matrix[row])):
+                if matrix[row][term] > 0:
+                    idf_abs[term] += 1
+        for item in idf_abs:
+            idf_matrix.append(round(log((number_of_docs + 1)/(item + 1)) + 1, 3))
+        return idf_matrix
+
+
+class TfidfTransformer():
+    def __init__(self):
+        pass
+
+    def fit_transform(self, tf_matrix, idf_matrix):
+        tf_idf_matrix = []
+        for row in tf_matrix:
+            tf_idf_matrix.append([round(x * y, 2) for x, y in zip(row, idf_matrix)])
+        return tf_idf_matrix
+
+
+class TfidVectorizer(CountVectorizer):
+    def __init__(self):
+        super.__init__()
+        self.tf_idf = TfidfTransformer()
+
+
+corpus = [
         'Crock Pot Pasta Never boil pasta again',
         'Pasta Pomodoro Fresh ingredients Parmesan to taste',
-        'Pasta is a life'
     ]
 vect = CountVectorizer()
+vect2 = TfidfTransformer()
 count_matrix = vect.fit_transform(corpus)
-assert vect.get_feature_names() == ['crock', 'pot', 'pasta', 'never', 'boil', 'again', 'pomodoro', 'fresh',
-                                    'ingredients', 'parmesan', 'to', 'taste', 'is', 'a', 'life']
-assert count_matrix == [[1, 1, 2, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                        [0, 0, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0],
-                        [0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1]]
 print(vect.get_feature_names())
-print(count_matrix)
+print(vect.term_freq(corpus))
+print(vect.idf_transform(corpus))
